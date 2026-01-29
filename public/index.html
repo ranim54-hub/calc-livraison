@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+ <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Gestion Production Lait - Zekrini Salim </title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥛</text></svg>">
+<!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3498db">
+    
+    <!-- iOS -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="apple-mobile-web-app-title" content="Gestion Lait">
+<style>
+    * { 
+        margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f7fa;
+        padding: 20px;
+        color: #2c3e50;
+    }
+    
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .header {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+        font-size: 28px;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+    
+    .header p {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+    
+    .badge {
+        display: inline-block;
+        background: #27ae60;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+    
+    .livreurs-section {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .add-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .add-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.2s;
+    }
+    
+    .add-form input:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+    
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #229954;
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+    
+    .livreur-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+    }
+    
+    .livreur-card {
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+    }
+    
+    .livreur-card:hover {
+        background: #d5dbdb;
+        transform: translateY(-2px);
+    }
+    
+    .livreur-card.active {
+        background: #3498db;
+        color: white;
+        border-color: #2980b9;
+    }
+    
+    .livreur-name {
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .filters-section {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    
+    select {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+    
+    select:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+    
+    .data-section {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .month-header {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .month-header h2 {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+    
+    .month-header p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .week-container {
+        margin-bottom: 25px;
+        border: 2px solid #ecf0f1;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .week-header {
+        background: #34495e;
+        color: white;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+    }
+    
+    .days-grid {
+        padding: 15px;
+    }
+    
+    .day-item {
+        display: grid;
+        grid-template-columns: 2fr 1.5fr 1.5fr 2fr;
+        gap: 10px;
+        padding: 15px 0;
+        border-bottom: 1px solid #ecf0f1;
+        align-items: center;
+    }
+    
+    .day-item:last-child {
+        border-bottom: none;
+    }
+    
+    .day-label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 15px;
+    }
+    
+    .qte-input {
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .qte-input:focus {
+        outline: none;
+        border-color: #3498db;
+        background: #ebf5fb;
+    }
+    
+    .price-display {
+        text-align: center;
+        font-weight: 700;
+        color: #27ae60;
+        font-size: 16px;
+    }
+    
+    .week-total {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 15px 20px;
+        font-size: 17px;
+        font-weight: 700;
+        text-align: center;
+    }
+    
+    .month-total {
+        background: linear-gradient(135deg, #27ae60, #229954);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    
+    .global-view {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .livreur-summary {
+        background: #fff9e6;
+        border-left: 4px solid #f39c12;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .livreur-summary-name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 16px;
+    }
+    
+    .livreur-summary-data {
+        font-weight: 700;
+        color: #27ae60;
+        font-size: 15px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #7f8c8d;
+    }
+    
+    .empty-state h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        font-size: 15px;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #7f8c8d;
+        font-size: 18px;
+    }
+    /* Ajoutez ces styles pour mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .livreur-card {
+                padding: 12px;
+                margin: 5px 0;
+            }
+            
+            .add-form {
+                flex-direction: column;
+            }
+            
+            .add-form input, .add-form button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            /* Boutons plus gros pour mobile */
+            .btn {
+                padding: 15px;
+                font-size: 16px;
+                min-height: 50px;
+            }
+            
+            /* Inputs plus gros */
+            input, select {
+                font-size: 16px; /* Empêche le zoom automatique sur iOS */
+                padding: 15px;
+                min-height: 50px;
+            }
+            
+            /* Éviter le zoom sur les inputs */
+            @media screen and (-webkit-min-device-pixel-ratio:0) {
+                select,
+                textarea,
+                input {
+                    font-size: 16px;
+                }
+            }
+            
+            /* Ajouter un footer pour mobile */
+            .mobile-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 10px;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                display: flex;
+                justify-content: space-around;
+                z-index: 1000;
+            }
+            
+            .mobile-tab {
+                text-align: center;
+                padding: 10px;
+                flex: 1;
+            }
+            
+            .mobile-tab.active {
+                color: #3498db;
+                border-bottom: 3px solid #3498db;
+            }
+        }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        body { padding: 10px; }
+        .header { padding: 20px 15px; }
+        .header h1 { font-size: 22px; }
+        .livreurs-section, .filters-section, .data-section, .global-view { padding: 15px; }
+        .add-form { flex-direction: column; }
+        .add-form input, .add-form button { width: 100%; }
+        .livreur-list { grid-template-columns: 1fr; }
+        .filters { grid-template-columns: 1fr; }
+        .day-item { grid-template-columns: 1fr; gap: 8px; }
+        .day-label { font-size: 14px; }
+        .qte-input { width: 100%; font-size: 18px; }
+        .livreur-summary { flex-direction: column; gap: 8px; text-align: center; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🥛 Gestion Production Lait <span class="badge">Base de Données</span></h1>
+        <p>Système avec sauvegarde permanente</p>
+    </div>
+
+    <div class="livreurs-section">
+        <div class="section-title">
+            <span>👥</span>
+            <span>Mes Livreurs</span>
+        </div>
+        
+        <div class="add-form">
+            <input type="text" id="newLivreur" placeholder="Nom du nouveau livreur..." />
+            <button class="btn btn-primary" onclick="addLivreur()">+ Ajouter</button>
+        </div>
+        
+        <div id="livreursList" class="livreur-list">
+            <div class="loading">Chargement...</div>
+        </div>
+    </div>
+
+    <div class="filters-section">
+        <div class="filters">
+            <select id="yearSelect" onchange="loadData()">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+            </select>
+            
+            <select id="monthSelect" onchange="loadData()"></select>
+            
+            <button class="btn btn-success" onclick="showAllLivreurs()">📊 Vue Globale</button>
+        </div>
+    </div>
+
+    <div id="dataContainer"></div>
+</div>
+
+<script>
+
+     // Enregistrer le service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log('Service Worker enregistré'))
+                .catch(err => console.log('Erreur Service Worker:', err));
+        }
+        
+        // Détecter si on est sur mobile
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Ajouter l'option "Ajouter à l'écran d'accueil"
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            showInstallPromotion();
+        });
+        
+        function showInstallPromotion() {
+            if (isMobile()) {
+                const installBtn = document.createElement('div');
+                installBtn.innerHTML = `
+                    <div style="
+                        position: fixed;
+                        bottom: 70px;
+                        left: 10px;
+                        right: 10px;
+                        background: linear-gradient(135deg, #3498db, #2980b9);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 10px;
+                        text-align: center;
+                        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+                        z-index: 9999;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 5px;">📱 Installer l'application</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Ajoutez à l'écran d'accueil pour un accès rapide</div>
+                        <button onclick="installApp()" style="
+                            background: white;
+                            color: #3498db;
+                            border: none;
+                            padding: 8px 20px;
+                            border-radius: 20px;
+                            margin-top: 10px;
+                            font-weight: bold;
+                            cursor: pointer;
+                        ">Installer</button>
+                        <button onclick="this.parentElement.remove()" style="
+                            position: absolute;
+                            top: 5px;
+                            right: 10px;
+                            background: transparent;
+                            border: none;
+                            color: white;
+                            font-size: 20px;
+                            cursor: pointer;
+                        ">×</button>
+                    </div>
+                `;
+                document.body.appendChild(installBtn);
+            }
+        }
+        
+        async function installApp() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                const { outcome } = await window.deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('Application installée');
+                }
+                window.deferredPrompt = null;
+            }
+        }
+const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const PRIX_LITRE = 75;
+
+let currentYear = 2026;
+let currentMonth = 0;
+let selectedLivreur = null;
+let livreurs = [];
+
+// ==================== API CALLS ====================
+async function apiCall(url, options = {}) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur réseau');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error);
+        alert('Erreur: ' + error.message);
+        throw error;
+    }
+}
+
+// ==================== GESTION DES LIVREURS ====================
+async function loadLivreurs() {
+    livreurs = await apiCall('/api/livreurs');
+    renderLivreurs();
+}
+
+function renderLivreurs() {
+    const container = document.getElementById("livreursList");
+    
+    if (livreurs.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#7f8c8d;padding:20px;">Aucun livreur ajouté</p>';
+        return;
+    }
+    
+    container.innerHTML = livreurs.map(liv => 
+        `<div class="livreur-card ${selectedLivreur && selectedLivreur.id === liv.id ? 'active' : ''}" 
+              onclick="selectLivreur('${liv.id}', '${liv.nom.replace(/'/g, "\\'")}')">
+            <span class="livreur-name">${liv.nom}</span>
+        </div>`
+    ).join('');
+}
+
+async function addLivreur() {
+    const input = document.getElementById("newLivreur");
+    const nom = input.value.trim();
+    
+    if (!nom) {
+        alert("⚠️ Veuillez entrer un nom");
+        return;
+    }
+    
+    try {
+        const newLivreur = await apiCall('/api/livreurs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nom })
+        });
+        
+        input.value = "";
+        await loadLivreurs();
+        selectedLivreur = newLivreur;
+        loadData();
+    } catch (error) {
+        // Erreur déjà gérée dans apiCall
+    }
+}
+
+function selectLivreur(id, nom) {
+    selectedLivreur = { id, nom };
+    renderLivreurs();
+    loadData();
+}
+
+function showAllLivreurs() {
+    selectedLivreur = null;
+    renderLivreurs();
+    loadData();
+}
+
+// ==================== GESTION DES LIVRAISONS ====================
+async function saveQte(livreurId, year, month, day, value) {
+    const quantite = parseFloat(value) || 0;
+    
+    await apiCall('/api/livraisons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            livreurId: livreurId,
+            annee: year,
+            mois: month + 1,
+            jour: day,
+            quantite: quantite
+        })
+    });
+    
+    loadData();
+}
+
+// ==================== GESTION DES VERSEMENTS ====================
+async function ajouterVersement(livreurId) {
+    const jour = document.getElementById('versementJour').value;
+    const montant = document.getElementById('versementMontant').value;
+    const description = document.getElementById('versementDescription').value || 'Versement';
+    
+    if (!jour || !montant) {
+        alert("⚠️ Veuillez remplir le jour et le montant");
+        return;
+    }
+    
+    try {
+        await apiCall('/api/versements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                livreurId: livreurId,
+                annee: currentYear,
+                mois: currentMonth + 1,
+                jour: parseInt(jour),
+                montant: parseFloat(montant),
+                description: description
+            })
+        });
+        
+        // Réinitialiser les champs
+        document.getElementById('versementJour').value = '';
+        document.getElementById('versementMontant').value = '';
+        document.getElementById('versementDescription').value = '';
+        
+        loadData();
+    } catch (error) {
+        alert('Erreur: ' + error.message);
+    }
+}
+
+async function ajouterVersementRapide(livreurId, jour) {
+    const montant = prompt(`Entrez le montant du versement pour le jour ${jour}:`, "1000");
+    
+    if (!montant || isNaN(montant) || parseFloat(montant) <= 0) {
+        alert("Montant invalide");
+        return;
+    }
+    
+    const description = prompt("Description (optionnel):", "Versement");
+    
+    try {
+        await apiCall('/api/versements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                livreurId: livreurId,
+                annee: currentYear,
+                mois: currentMonth + 1,
+                jour: jour,
+                montant: parseFloat(montant),
+                description: description || 'Versement'
+            })
+        });
+        
+        loadData();
+    } catch (error) {
+        alert('Erreur: ' + error.message);
+    }
+}
+
+async function supprimerVersement(versementId) {
+    if (confirm("Supprimer ce versement ?")) {
+        try {
+            await apiCall(`/api/versements/${versementId}`, {
+                method: 'DELETE'
+            });
+            
+            loadData();
+        } catch (error) {
+            alert('Erreur: ' + error.message);
+        }
+    }
+}
+
+// ==================== AFFICHAGE PAR LIVREUR ====================
+async function loadPerLivreur(livreur) {
+    const container = document.getElementById("dataContainer");
+    container.innerHTML = '<div class="loading">Chargement des données...</div>';
+    
+    try {
+        // Récupérer les livraisons du mois
+        const livraisons = await apiCall(`/api/livraisons/${livreur.id}/${currentYear}/${currentMonth + 1}`);
+        
+        // Récupérer les versements du mois
+        const versements = await apiCall(`/api/versements/${livreur.id}/${currentYear}/${currentMonth + 1}`);
+        
+        // Récupérer les statistiques complètes
+        const stats = await apiCall(`/api/statistiques-completes/${livreur.id}/${currentYear}/${currentMonth + 1}`);
+        
+        // Créer un dictionnaire jour -> quantité
+        const livraisonsMap = {};
+        livraisons.forEach(l => {
+            livraisonsMap[l.jour] = l.quantite;
+        });
+        
+        // Créer un dictionnaire jour -> versements
+        const versementsMap = {};
+        versements.forEach(v => {
+            if (!versementsMap[v.jour]) versementsMap[v.jour] = [];
+            versementsMap[v.jour].push(v);
+        });
+        
+        let html = `
+            <div class="data-section">
+                <div class="month-header">
+                    <h2>${livreur.nom}</h2>
+                    <p>${MONTHS[currentMonth]} ${currentYear}</p>
+                </div>`;
+        
+        // ==================== STATISTIQUES RÉSUMÉES ====================
+        html += `
+            <div style="background: #e8f4fc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap;">
+                    <div style="margin: 5px;">
+                        <div style="font-size: 12px; color: #7f8c8d;">Jours travaillés</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3498db;">${stats.jours_travailles}</div>
+                    </div>
+                    <div style="margin: 5px;">
+                        <div style="font-size: 12px; color: #7f8c8d;">Total litres</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #27ae60;">${stats.total_litres.toFixed(1)}</div>
+                    </div>
+                    <div style="margin: 5px;">
+                        <div style="font-size: 12px; color: #7f8c8d;">Total à payer</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #9b59b6;">${stats.total_montant_livraisons.toLocaleString()} DA</div>
+                    </div>
+                    <div style="margin: 5px;">
+                        <div style="font-size: 12px; color: #7f8c8d;">Versements</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #e74c3c;">${stats.total_versements.toLocaleString()} DA</div>
+                    </div>
+                    <div style="margin: 5px;">
+                        <div style="font-size: 12px; color: #7f8c8d;">Solde net</div>
+                        <div style="font-size: 24px; font-weight: bold; color: ${stats.solde >= 0 ? '#27ae60' : '#e74c3c'};">${stats.solde.toLocaleString()} DA</div>
+                    </div>
+                </div>
+            </div>`;
+        
+        // ==================== FORMULAIRE AJOUT VERSEMENT ====================
+        html += `
+            <div style="background: #fff9e6; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f39c12;">
+                <h4 style="margin-bottom: 10px; color: #2c3e50;">➕ Ajouter un versement</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 10px; align-items: end;">
+                    <div>
+                        <label style="font-size: 12px; color: #7f8c8d; display: block; margin-bottom: 5px;">Jour</label>
+                        <input type="number" id="versementJour" placeholder="Jour" min="1" max="31" 
+                               style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px; font-size:16px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7f8c8d; display: block; margin-bottom: 5px;">Montant (DA)</label>
+                        <input type="number" id="versementMontant" placeholder="Montant" step="100" 
+                               style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px; font-size:16px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7f8c8d; display: block; margin-bottom: 5px;">Description</label>
+                        <input type="text" id="versementDescription" placeholder="Description (optionnel)" 
+                               style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px; font-size:16px;">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" style="height:44px;" 
+                                onclick="ajouterVersement('${livreur.id}')">
+                            Enregistrer
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        
+        let date = new Date(currentYear, currentMonth, 1);
+        let monthTotal = 0;
+        let monthVersements = 0;
+        let week = [];
+        let weekNum = 1;
+        
+        while (date.getMonth() === currentMonth) {
+            week.push(new Date(date));
+            
+            const isLastDay = date.getDate() === new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            if (week.length === 7 || isLastDay) {
+                let weekTotal = 0;
+                let weekVersements = 0;
+                
+                html += `
+                    <div class="week-container">
+                        <div class="week-header">Semaine ${weekNum}</div>
+                        <div class="days-grid">`;
+                
+                week.forEach(d => {
+                    const dayNum = d.getDate();
+                    const dateStr = d.toLocaleDateString("fr-FR", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long"
+                    });
+                    
+                    const qte = livraisonsMap[dayNum] || 0;
+                    const prix = qte * PRIX_LITRE;
+                    weekTotal += qte;
+                    
+                    // Versements pour ce jour
+                    const versementsDuJour = versementsMap[dayNum] || [];
+                    let versementsHtml = '';
+                    let totalVersementsJour = 0;
+                    
+                    versementsDuJour.forEach(v => {
+                        totalVersementsJour += v.montant;
+                        versementsHtml += `
+                            <div style="
+                                background: #ffebee;
+                                padding: 8px;
+                                margin: 5px 0;
+                                border-radius: 4px;
+                                border-left: 3px solid #e74c3c;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                font-size: 14px;
+                            ">
+                                <span>💵 ${v.description}: ${v.montant.toLocaleString()} DA</span>
+                                <button onclick="supprimerVersement('${v.id}')" 
+                                        style="
+                                            background: #e74c3c;
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 4px;
+                                            cursor: pointer;
+                                            font-size: 12px;
+                                        ">
+                                    ×
+                                </button>
+                            </div>`;
+                    });
+                    
+                    weekVersements += totalVersementsJour;
+                    
+                    html += `
+                        <div class="day-item">
+                            <div class="day-label">${dateStr}</div>
+                            <input type="number" 
+                                   class="qte-input" 
+                                   value="${qte > 0 ? qte : ''}" 
+                                   placeholder="0"
+                                   step="0.1"
+                                   min="0"
+                                   onchange="saveQte('${livreur.id}', ${currentYear}, ${currentMonth}, ${dayNum}, this.value)">
+                            <div class="price-display">${prix.toLocaleString()} DA</div>
+                            <div>
+                                ${versementsHtml}
+                                <button onclick="ajouterVersementRapide('${livreur.id}', ${dayNum})" 
+                                        style="
+                                            background: #f39c12;
+                                            color: white;
+                                            border: none;
+                                            padding: 6px 12px;
+                                            border-radius: 4px;
+                                            cursor: pointer;
+                                            font-size: 12px;
+                                            margin-top: 5px;
+                                            width: 100%;
+                                        ">
+                                    + Versement
+                                </button>
+                            </div>
+                        </div>`;
+                });
+                
+                html += `
+                        </div>
+                        <div class="week-total">
+                            Total semaine ${weekNum}: 
+                            ${weekTotal.toFixed(1)} L • ${(weekTotal * PRIX_LITRE).toLocaleString()} DA
+                            ${weekVersements > 0 ? `• Versements: ${weekVersements.toLocaleString()} DA` : ''}
+                        </div>
+                    </div>`;
+                
+                monthTotal += weekTotal;
+                monthVersements += weekVersements;
+                week = [];
+                weekNum++;
+            }
+            
+            date.setDate(date.getDate() + 1);
+        }
+        
+        // ==================== RÉCAPITULATIF FINAL ====================
+        const soldeFinal = (monthTotal * PRIX_LITRE) - monthVersements;
+        
+        html += `
+            <div class="month-total" style="
+                background: linear-gradient(135deg, #9b59b6, #8e44ad);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin-top: 25px;
+                text-align: center;
+            ">
+                <h3>📊 RÉCAPITULATIF ${MONTHS[currentMonth].toUpperCase()} ${currentYear}</h3>
+                <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+                    <div>
+                        <div style="font-size: 14px;">Total Livraisons</div>
+                        <div style="font-size: 22px; font-weight: bold;">${(monthTotal * PRIX_LITRE).toLocaleString()} DA</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px;">Total Versements</div>
+                        <div style="font-size: 22px; font-weight: bold; color: #ffeb3b;">- ${monthVersements.toLocaleString()} DA</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px;">Solde Net</div>
+                        <div style="font-size: 24px; font-weight: bold; color: ${soldeFinal >= 0 ? '#4caf50' : '#ff5252'};">${soldeFinal.toLocaleString()} DA</div>
+                    </div>
+                </div>
+            </div>`;
+        
+        html += `
+                <button class="btn btn-danger" onclick="clearAll()">
+                    🗑️ Effacer toutes les données
+                </button>
+            </div>`;
+        
+        container.innerHTML = html;
+    } catch (error) {
+        console.error('Erreur:', error);
+        container.innerHTML = '<div class="empty-state"><h3>Erreur de chargement</h3><p>Veuillez réessayer</p></div>';
+    }
+}
+
+
+
+
+
+
+
+// ==================== VUE GLOBALE ====================
+async function loadGlobal() {
+    const container = document.getElementById("dataContainer");
+    
+    if (livreurs.length === 0) {
+        container.innerHTML = `
+            <div class="global-view">
+                <div class="empty-state">
+                    <h3>👥 Aucun livreur</h3>
+                    <p>Ajoutez des livreurs pour commencer</p>
+                </div>
+            </div>`;
+        return;
+    }
+    
+    container.innerHTML = '<div class="loading">Chargement des données...</div>';
+    
+    try {
+        // Récupérer toutes les livraisons du mois
+        const livraisons = await apiCall(`/api/livraisons/global/${currentYear}/${currentMonth + 1}`);
+        const classement = await apiCall(`/api/classement/${currentYear}/${currentMonth + 1}`);
+        const versements = await apiCall(`/api/versements/global/${currentYear}/${currentMonth + 1}`);
+        
+        let html = `
+            <div class="global-view">
+                <div class="month-header">
+                    <h2>Vue Globale</h2>
+                    <p>${MONTHS[currentMonth]} ${currentYear} • Tous les livreurs</p>
+                </div>`;
+        
+        // ==================== TABLEAU DES LIVREURS AVEC STATS ====================
+        html += `
+            <div style="
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                margin-top: 20px;
+                margin-bottom: 30px;
+            ">
+                <h3 style="
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-bottom: 20px;
+                    text-align: center;
+                    border-bottom: 2px solid #3498db;
+                    padding-bottom: 10px;
+                ">
+                    📊 Statistiques par Livreur
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">`;
+        
+        // Calculer les totaux globaux
+        let globalTotalLitres = 0;
+        let globalTotalMontant = 0;
+        let globalTotalVersements = 0;
+        let globalSoldeNet = 0;
+        
+        // Pour chaque livreur, créer un cadre
+        for (const livreur of livreurs) {
+            try {
+                // Récupérer les stats complètes
+                const stats = await apiCall(`/api/statistiques-completes/${livreur.id}/${currentYear}/${currentMonth + 1}`);
+                
+                globalTotalLitres += stats.total_litres;
+                globalTotalMontant += stats.total_montant_livraisons;
+                globalTotalVersements += stats.total_versements;
+                globalSoldeNet += stats.solde;
+                
+                html += `
+                    <div style="
+                        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                        border-radius: 12px;
+                        padding: 20px;
+                        border-left: 6px solid #3498db;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        transition: transform 0.3s;
+                    " 
+                    onmouseover="this.style.transform='translateY(-5px)'" 
+                    onmouseout="this.style.transform='translateY(0)'">
+                        <div style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 2px solid #3498db;
+                        ">
+                            <h4 style="
+                                font-size: 18px;
+                                font-weight: 700;
+                                color: #2c3e50;
+                                margin: 0;
+                            ">${livreur.nom}</h4>
+                            <span style="
+                                background: #3498db;
+                                color: white;
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                font-weight: 600;
+                            ">${stats.jours_travailles} jours</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #7f8c8d; font-size: 14px;">🍶 Litres livrés:</span>
+                                <span style="font-weight: 700; color: #2c3e50; font-size: 16px;">${stats.total_litres.toFixed(1)} L</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #7f8c8d; font-size: 14px;">💰 Montant à payer:</span>
+                                <span style="font-weight: 700; color: #27ae60; font-size: 16px;">${stats.total_montant_livraisons.toLocaleString()} DA</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #7f8c8d; font-size: 14px;">💵 Versements reçus:</span>
+                                <span style="font-weight: 700; color: #e74c3c; font-size: 16px;">${stats.total_versements.toLocaleString()} DA</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #7f8c8d; font-size: 14px;">⚖️ Solde net:</span>
+                                <span style="font-weight: 700; color: ${stats.solde >= 0 ? '#27ae60' : '#e74c3c'}; font-size: 18px;">${stats.solde.toLocaleString()} DA</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="selectLivreur('${livreur.id}', '${livreur.nom.replace(/'/g, "\\'")}')" 
+                                style="
+                                    background: #3498db;
+                                    color: white;
+                                    border: none;
+                                    padding: 10px 20px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    width: 100%;
+                                    transition: background 0.3s;
+                                "
+                                onmouseover="this.style.background='#2980b9'"
+                                onmouseout="this.style.background='#3498db'">
+                            👁️ Voir détail
+                        </button>
+                    </div>`;
+            } catch (error) {
+                console.error(`Erreur pour ${livreur.nom}:`, error);
+            }
+        }
+        
+        html += `</div></div>`;
+        
+        // ==================== CLASSEMENT DU MOIS ====================
+        const livreursActifs = classement.filter(l => l.total_litres > 0);
+        
+        if (livreursActifs.length > 0) {
+            html += `
+                <div style="
+                    background: white;
+                    padding: 25px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    margin-top: 20px;
+                    margin-bottom: 30px;
+                ">
+                    <h3 style="
+                        font-size: 20px;
+                        font-weight: 600;
+                        color: #2c3e50;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        border-bottom: 2px solid #3498db;
+                        padding-bottom: 10px;
+                    ">
+                        🏆 Classement du mois
+                    </h3>`;
+            
+            livreursActifs.forEach((liv, index) => {
+                // Médaille pour les 3 premiers
+                let medal = "";
+                if (index === 0) medal = "🥇";
+                else if (index === 1) medal = "🥈";
+                else if (index === 2) medal = "🥉";
+                
+                html += `
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        border-radius: 8px;
+                        ${index === 0 ? 'background: linear-gradient(135deg, #fff9e6, #ffefbf); border-left: 5px solid #f39c12;' : ''}
+                        ${index === 1 ? 'background: #f8f9fa; border-left: 5px solid #7f8c8d;' : ''}
+                        ${index === 2 ? 'background: #fff0e6; border-left: 5px solid #e74c3c;' : ''}
+                        ${index > 2 ? 'background: #f8f9fa; border-left: 5px solid #3498db;' : ''}
+                    ">
+                        <div>
+                            <span style="font-weight: 700; font-size: 18px;">${medal} ${index + 1}. ${liv.nom}</span>
+                            ${liv.jours_travailles > 0 ? `<span style="font-size:12px;color:#7f8c8d;margin-left:8px;">(${liv.jours_travailles} jours)</span>` : ''}
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 700; color: #2c3e50; font-size: 16px;">${liv.total_litres.toFixed(1)} L</div>
+                            <div style="font-weight: 700; color: #27ae60; font-size: 14px;">${Math.round(liv.total_montant).toLocaleString()} DA</div>
+                        </div>
+                    </div>`;
+            });
+            
+            html += `</div>`;
+        }
+        
+        // ==================== BILAN GLOBAL ENTREPRISE ====================
+        html += `
+            <div class="month-total" style="
+                background: linear-gradient(135deg, #2c3e50, #34495e);
+                color: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+                margin-top: 20px;
+                margin-bottom: 30px;
+            ">
+                <h3 style="
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                    text-align: center;
+                    color: #fff;
+                ">🏢 BILAN GLOBAL ENTREPRISE</h3>
+                
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    text-align: center;
+                ">
+                    <div style="
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 15px;
+                        border-radius: 8px;
+                        backdrop-filter: blur(10px);
+                    ">
+                        <div style="font-size: 14px; opacity: 0.9;">Total Litres</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #3498db;">${globalTotalLitres.toFixed(1)} L</div>
+                    </div>
+                    
+                    <div style="
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 15px;
+                        border-radius: 8px;
+                        backdrop-filter: blur(10px);
+                    ">
+                        <div style="font-size: 14px; opacity: 0.9;">Chiffre d'Affaires</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #27ae60;">${globalTotalMontant.toLocaleString()} DA</div>
+                    </div>
+                    
+                    <div style="
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 15px;
+                        border-radius: 8px;
+                        backdrop-filter: blur(10px);
+                    ">
+                        <div style="font-size: 14px; opacity: 0.9;">Total Versements</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #f39c12;">${globalTotalVersements.toLocaleString()} DA</div>
+                    </div>
+                    
+                    <div style="
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 15px;
+                        border-radius: 8px;
+                        backdrop-filter: blur(10px);
+                    ">
+                        <div style="font-size: 14px; opacity: 0.9;">Solde Net (CA - Versements)</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #4caf50;">${globalSoldeNet.toLocaleString()} DA</div>
+                    </div>
+                </div>
+                
+                <div style="
+                    margin-top: 25px;
+                    padding-top: 20px;
+                    border-top: 2px solid rgba(255, 255, 255, 0.2);
+                    text-align: center;
+                ">
+                    <div style="font-size: 16px; opacity: 0.9;">
+                        ${MONTHS[currentMonth].toUpperCase()} ${currentYear} • ${livreurs.length} livreurs • ${livreursActifs.length} actifs
+                    </div>
+                </div>
+            </div>`;
+        
+        html += `
+                <button class="btn btn-danger" onclick="clearAll()">
+                    🗑️ Effacer toutes les données
+                </button>
+            </div>`;
+        
+        container.innerHTML = html;
+    } catch (error) {
+        console.error('Erreur:', error);
+        container.innerHTML = '<div class="empty-state"><h3>Erreur de chargement</h3><p>Veuillez réessayer</p></div>';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==================== CHARGEMENT PRINCIPAL ====================
+async function loadData() {
+    currentYear = parseInt(document.getElementById("yearSelect").value);
+    currentMonth = parseInt(document.getElementById("monthSelect").value);
+    
+    if (selectedLivreur) {
+        await loadPerLivreur(selectedLivreur);
+    } else {
+        await loadGlobal();
+    }
+}
+
+async function clearAll() {
+    if (confirm("⚠️ ATTENTION ! Cette action va supprimer TOUTES les données.\n\nÊtes-vous absolument sûr ?")) {
+        if (confirm("Dernière confirmation : effacer vraiment TOUT ?")) {
+            await apiCall('/api/reset', { method: 'DELETE' });
+            selectedLivreur = null;
+            await loadLivreurs();
+            loadData();
+        }
+    }
+}
+
+// ==================== INITIALISATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const monthSelect = document.getElementById("monthSelect");
+    MONTHS.forEach((month, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = month;
+        if (index === 0) opt.selected = true;
+        monthSelect.appendChild(opt);
+    });
+
+    // Charger les données au démarrage
+    (async function() {
+        await loadLivreurs();
+        loadData();
+    })();
+});
+</script>
+
+</body>
+</html>

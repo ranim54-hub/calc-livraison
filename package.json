@@ -1,0 +1,27 @@
+{
+  "name": "gestion-lait-db",
+  "version": "2.0.0",
+  "description": "Système de gestion de production de lait avec base de données JSON et versements",
+  "main": "server-json.js",
+  "scripts": {
+    "start": "node server-json.js",
+    "dev": "nodemon server-json.js"
+  },
+  "keywords": [
+    "gestion",
+    "lait",
+    "production",
+    "json",
+    "express",
+    "versements"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

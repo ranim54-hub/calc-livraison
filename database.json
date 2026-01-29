@@ -1,0 +1,223 @@
+{
+  "livreurs": [
+    {
+      "id": "176970565491330itn4443",
+      "nom": "afifa",
+      "date_ajout": "2026-01-29T16:54:14.913Z"
+    },
+    {
+      "id": "1769705642755kagtuzp1g",
+      "nom": "ahmed",
+      "date_ajout": "2026-01-29T16:54:02.755Z"
+    },
+    {
+      "id": "176970625057653y07bb36",
+      "nom": "amine",
+      "date_ajout": "2026-01-29T17:04:10.576Z"
+    },
+    {
+      "id": "1769713940366hhtd3ohkt",
+      "nom": "marwan",
+      "date_ajout": "2026-01-29T19:12:20.366Z"
+    },
+    {
+      "id": "1769713946017lwqoadx5d",
+      "nom": "salim",
+      "date_ajout": "2026-01-29T19:12:26.017Z"
+    }
+  ],
+  "livraisons": [
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 1,
+      "quantite": 10,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T17:04:28.380Z",
+      "id": "17697062683805pditn6xk"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 3,
+      "quantite": 20,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T17:04:32.238Z",
+      "id": "1769706272238kd600g6um"
+    },
+    {
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 2,
+      "quantite": 20,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T17:07:23.893Z",
+      "id": "17697064438946wdg5txdu"
+    },
+    {
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 5,
+      "quantite": 50,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T17:07:37.502Z",
+      "id": "1769706457502doxdvjqgu"
+    },
+    {
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 7,
+      "quantite": 90,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T17:07:54.278Z",
+      "id": "17697064742783box0hnbp"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 2,
+      "quantite": 50,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:13:17.809Z",
+      "id": "1769710397809j3xhddyus"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 7,
+      "quantite": 60,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:13:23.525Z",
+      "id": "17697104035254n0occhhd"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 12,
+      "quantite": 40,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:13:31.080Z",
+      "id": "1769710411080cvoo6gdaj"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 11,
+      "quantite": 30,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:13:36.862Z",
+      "id": "17697104168627j6dnd91p"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 29,
+      "quantite": 10,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:14:37.394Z",
+      "id": "1769710477394k731djhrd"
+    },
+    {
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 3,
+      "jour": 12,
+      "quantite": 60,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:15:24.627Z",
+      "id": "1769710524627h9v0jk56a"
+    },
+    {
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 11,
+      "quantite": 40,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T18:45:47.904Z",
+      "id": "17697123479044x87dlujw"
+    },
+    {
+      "livreur_id": "176970625057653y07bb36",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 5,
+      "quantite": 40,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T19:10:16.486Z",
+      "id": "17697138164867ohur7b1h"
+    },
+    {
+      "livreur_id": "1769713940366hhtd3ohkt",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 2,
+      "quantite": 40,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T19:12:37.492Z",
+      "id": "1769713957492145zac6w8"
+    },
+    {
+      "livreur_id": "1769713946017lwqoadx5d",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 2,
+      "quantite": 40,
+      "prix_unitaire": 75,
+      "date_saisie": "2026-01-29T19:12:46.375Z",
+      "id": "1769713966375hv4dna1ko"
+    }
+  ],
+  "versements": [
+    {
+      "id": "1769711809098j3sss27df",
+      "livreur_id": "176970565491330itn4443",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 1,
+      "montant": 500,
+      "description": "Versement",
+      "date_creation": "2026-01-29T18:36:49.098Z"
+    },
+    {
+      "id": "1769711938499eezudcg42",
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 2,
+      "montant": 10,
+      "description": "Versement",
+      "date_creation": "2026-01-29T18:38:58.499Z"
+    },
+    {
+      "id": "1769711960197ckpzwfcdf",
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 2,
+      "montant": 10,
+      "description": "Versement",
+      "date_creation": "2026-01-29T18:39:20.197Z"
+    },
+    {
+      "id": "1769711981711vtef1cq51",
+      "livreur_id": "1769705642755kagtuzp1g",
+      "annee": 2026,
+      "mois": 1,
+      "jour": 5,
+      "montant": 10,
+      "description": "Versement",
+      "date_creation": "2026-01-29T18:39:41.711Z"
+    }
+  ]
+}
