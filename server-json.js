@@ -2,17 +2,38 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const app = express();
 const PORT = 3000;
 
+// ═══════════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════════
+
 // Middleware
 app.use(bodyParser.json());
+
+// Configuration des sessions
+app.use(session({
+    secret: 'zekrini-salim-lait-secret-key-2024',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Mettre true si HTTPS
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 heures
+    }
+}));
+
 app.use(express.static('public'));
 
 // Fichier de base de données JSON
 const DB_FILE = path.join(__dirname, 'database.json');
 
+// Identifiants de connexion (vous pouvez les stocker ailleurs pour plus de sécurité)
+const VALID_USERNAME = 'salim';
+const VALID_PASSWORD = 'salim24';
 
 // Structure de la base de données
 let db = {
@@ -20,6 +41,66 @@ let db = {
     livraisons: [],
     versements: []
 };
+
+// ═══════════════════════════════════════════════════
+// MIDDLEWARE D'AUTHENTIFICATION
+// ═══════════════════════════════════════════════════
+
+function requireAuth(req, res, next) {
+    if (req.session && req.session.authenticated) {
+        return next();
+    } else {
+        return res.status(401).json({ error: 'Non authentifié' });
+    }
+}
+
+// ═══════════════════════════════════════════════════
+// ROUTES D'AUTHENTIFICATION
+// ═══════════════════════════════════════════════════
+
+// Vérifier l'authentification
+app.get('/api/auth/check', (req, res) => {
+    res.json({ 
+        authenticated: req.session && req.session.authenticated === true 
+    });
+});
+
+// Login
+app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        req.session.authenticated = true;
+        req.session.username = username;
+        
+        console.log(`✓ Connexion réussie: ${username} à ${new Date().toLocaleString('fr-FR')}`);
+        
+        res.json({ 
+            success: true, 
+            message: 'Connexion réussie' 
+        });
+    } else {
+        console.log(`✗ Tentative de connexion échouée à ${new Date().toLocaleString('fr-FR')}`);
+        
+        res.status(401).json({ 
+            error: 'Identifiants invalides' 
+        });
+    }
+});
+
+// Logout
+app.post('/api/auth/logout', (req, res) => {
+    const username = req.session.username;
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Erreur de déconnexion' });
+        }
+        
+        console.log(`✓ Déconnexion: ${username || 'Utilisateur'} à ${new Date().toLocaleString('fr-FR')}`);
+        
+        res.json({ success: true, message: 'Déconnexion réussie' });
+    });
+});
 
 // ═══════════════════════════════════════════════════
 // GESTION DE LA BASE DE DONNÉES JSON
@@ -49,29 +130,25 @@ function saveDatabase() {
     }
 }
 
-// Générer un ID unique
 function generateId() {
     return Date.now() + Math.random().toString(36).substr(2, 9);
 }
 
 // ═══════════════════════════════════════════════════
-// ROUTES API - LIVREURS
+// ROUTES API - LIVREURS (PROTÉGÉES)
 // ═══════════════════════════════════════════════════
 
-// Obtenir tous les livreurs
-app.get('/api/livreurs', (req, res) => {
+app.get('/api/livreurs', requireAuth, (req, res) => {
     res.json(db.livreurs.sort((a, b) => a.nom.localeCompare(b.nom)));
 });
 
-// Ajouter un livreur
-app.post('/api/livreurs', (req, res) => {
+app.post('/api/livreurs', requireAuth, (req, res) => {
     const { nom } = req.body;
     
     if (!nom || nom.trim() === '') {
         return res.status(400).json({ error: 'Le nom est requis' });
     }
 
-    // Vérifier si le livreur existe déjà
     const exists = db.livreurs.find(l => l.nom.toLowerCase() === nom.trim().toLowerCase());
     if (exists) {
         return res.status(409).json({ error: 'Ce livreur existe déjà' });
@@ -89,8 +166,7 @@ app.post('/api/livreurs', (req, res) => {
     res.json(newLivreur);
 });
 
-// Supprimer un livreur
-app.delete('/api/livreurs/:id', (req, res) => {
+app.delete('/api/livreurs/:id', requireAuth, (req, res) => {
     const { id } = req.params;
     
     const index = db.livreurs.findIndex(l => l.id === id);
@@ -98,7 +174,6 @@ app.delete('/api/livreurs/:id', (req, res) => {
         return res.status(404).json({ error: 'Livreur non trouvé' });
     }
 
-    // Supprimer aussi toutes ses livraisons et versements
     db.livraisons = db.livraisons.filter(liv => liv.livreur_id !== id);
     db.versements = db.versements.filter(v => v.livreur_id !== id);
     db.livreurs.splice(index, 1);
@@ -108,11 +183,10 @@ app.delete('/api/livreurs/:id', (req, res) => {
 });
 
 // ═══════════════════════════════════════════════════
-// ROUTES API - LIVRAISONS
+// ROUTES API - LIVRAISONS (PROTÉGÉES)
 // ═══════════════════════════════════════════════════
 
-// Obtenir les livraisons d'un livreur pour un mois
-app.get('/api/livraisons/:livreurId/:annee/:mois', (req, res) => {
+app.get('/api/livraisons/:livreurId/:annee/:mois', requireAuth, (req, res) => {
     const { livreurId, annee, mois } = req.params;
     
     const livraisons = db.livraisons
@@ -131,8 +205,7 @@ app.get('/api/livraisons/:livreurId/:annee/:mois', (req, res) => {
     res.json(livraisons);
 });
 
-// Obtenir toutes les livraisons pour un mois (tous livreurs)
-app.get('/api/livraisons/global/:annee/:mois', (req, res) => {
+app.get('/api/livraisons/global/:annee/:mois', requireAuth, (req, res) => {
     const { annee, mois } = req.params;
     
     const livraisons = db.livraisons
@@ -155,8 +228,7 @@ app.get('/api/livraisons/global/:annee/:mois', (req, res) => {
     res.json(livraisons);
 });
 
-// Enregistrer/Modifier une livraison
-app.post('/api/livraisons', (req, res) => {
+app.post('/api/livraisons', requireAuth, (req, res) => {
     const { livreurId, annee, mois, jour, quantite } = req.body;
     
     if (!livreurId || !annee || !mois || !jour) {
@@ -165,7 +237,6 @@ app.post('/api/livraisons', (req, res) => {
 
     const qte = parseFloat(quantite) || 0;
 
-    // Trouver une livraison existante
     const index = db.livraisons.findIndex(l =>
         l.livreur_id === livreurId &&
         l.annee === parseInt(annee) &&
@@ -174,14 +245,12 @@ app.post('/api/livraisons', (req, res) => {
     );
 
     if (qte === 0) {
-        // Supprimer si quantité = 0
         if (index !== -1) {
             db.livraisons.splice(index, 1);
             saveDatabase();
         }
         res.json({ success: true, deleted: true });
     } else {
-        // Mettre à jour ou créer
         const livraison = {
             livreur_id: livreurId,
             annee: parseInt(annee),
@@ -193,10 +262,8 @@ app.post('/api/livraisons', (req, res) => {
         };
 
         if (index !== -1) {
-            // Mise à jour
             db.livraisons[index] = { ...db.livraisons[index], ...livraison };
         } else {
-            // Création
             livraison.id = generateId();
             db.livraisons.push(livraison);
         }
@@ -207,11 +274,10 @@ app.post('/api/livraisons', (req, res) => {
 });
 
 // ═══════════════════════════════════════════════════
-// ROUTES API - VERSEMENTS
+// ROUTES API - VERSEMENTS (PROTÉGÉES)
 // ═══════════════════════════════════════════════════
 
-// Obtenir tous les versements d'un livreur pour un mois
-app.get('/api/versements/:livreurId/:annee/:mois', (req, res) => {
+app.get('/api/versements/:livreurId/:annee/:mois', requireAuth, (req, res) => {
     const { livreurId, annee, mois } = req.params;
     
     const versements = db.versements
@@ -225,8 +291,7 @@ app.get('/api/versements/:livreurId/:annee/:mois', (req, res) => {
     res.json(versements);
 });
 
-// Obtenir tous les versements pour un mois (tous livreurs)
-app.get('/api/versements/global/:annee/:mois', (req, res) => {
+app.get('/api/versements/global/:annee/:mois', requireAuth, (req, res) => {
     const { annee, mois } = req.params;
     
     const versements = db.versements
@@ -251,8 +316,7 @@ app.get('/api/versements/global/:annee/:mois', (req, res) => {
     res.json(versements);
 });
 
-// Enregistrer un versement
-app.post('/api/versements', (req, res) => {
+app.post('/api/versements', requireAuth, (req, res) => {
     const { livreurId, annee, mois, jour, montant, description } = req.body;
     
     if (!livreurId || !annee || !mois || !jour || !montant) {
@@ -275,8 +339,7 @@ app.post('/api/versements', (req, res) => {
     res.json({ success: true, versement });
 });
 
-// Supprimer un versement
-app.delete('/api/versements/:id', (req, res) => {
+app.delete('/api/versements/:id', requireAuth, (req, res) => {
     const { id } = req.params;
     
     const index = db.versements.findIndex(v => v.id === id);
@@ -290,11 +353,10 @@ app.delete('/api/versements/:id', (req, res) => {
 });
 
 // ═══════════════════════════════════════════════════
-// ROUTES API - STATISTIQUES
+// ROUTES API - STATISTIQUES (PROTÉGÉES)
 // ═══════════════════════════════════════════════════
 
-// Obtenir les statistiques d'un livreur pour un mois
-app.get('/api/stats/:livreurId/:annee/:mois', (req, res) => {
+app.get('/api/stats/:livreurId/:annee/:mois', requireAuth, (req, res) => {
     const { livreurId, annee, mois } = req.params;
     
     const livraisons = db.livraisons.filter(l =>
@@ -315,11 +377,9 @@ app.get('/api/stats/:livreurId/:annee/:mois', (req, res) => {
     res.json(stats);
 });
 
-// Obtenir les statistiques complètes d'un livreur (livraisons + versements)
-app.get('/api/statistiques-completes/:livreurId/:annee/:mois', (req, res) => {
+app.get('/api/statistiques-completes/:livreurId/:annee/:mois', requireAuth, (req, res) => {
     const { livreurId, annee, mois } = req.params;
     
-    // Livraisons
     const livraisons = db.livraisons.filter(l =>
         l.livreur_id === livreurId &&
         l.annee === parseInt(annee) &&
@@ -329,7 +389,6 @@ app.get('/api/statistiques-completes/:livreurId/:annee/:mois', (req, res) => {
     const total_livraisons = livraisons.reduce((sum, l) => sum + l.quantite, 0);
     const total_montant_livraisons = livraisons.reduce((sum, l) => sum + (l.quantite * l.prix_unitaire), 0);
 
-    // Versements
     const versements = db.versements.filter(v =>
         v.livreur_id === livreurId &&
         v.annee === parseInt(annee) &&
@@ -351,8 +410,7 @@ app.get('/api/statistiques-completes/:livreurId/:annee/:mois', (req, res) => {
     res.json(stats);
 });
 
-// Obtenir le classement des livreurs pour un mois
-app.get('/api/classement/:annee/:mois', (req, res) => {
+app.get('/api/classement/:annee/:mois', requireAuth, (req, res) => {
     const { annee, mois } = req.params;
     
     const classement = db.livreurs.map(livreur => {
@@ -377,10 +435,12 @@ app.get('/api/classement/:annee/:mois', (req, res) => {
     res.json(classement);
 });
 
-// Effacer toutes les données
-app.delete('/api/reset', (req, res) => {
+app.delete('/api/reset', requireAuth, (req, res) => {
     db = { livreurs: [], livraisons: [], versements: [] };
     saveDatabase();
+    
+    console.log(`⚠️ RESET: Base de données effacée par ${req.session.username} à ${new Date().toLocaleString('fr-FR')}`);
+    
     res.json({ success: true, message: 'Toutes les données ont été effacées' });
 });
 
@@ -388,7 +448,6 @@ app.delete('/api/reset', (req, res) => {
 // SAUVEGARDE AUTOMATIQUE
 // ═══════════════════════════════════════════════════
 
-// Sauvegarde automatique toutes les 5 minutes
 setInterval(() => {
     saveDatabase();
     console.log('✓ Sauvegarde automatique effectuée');
@@ -411,10 +470,13 @@ loadDatabase();
 app.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════╗
-║   🥛 SERVEUR GESTION LAIT DÉMARRÉ     ║
+║   🥛 SERVEUR GESTION LAIT SÉCURISÉ    ║
 ╚════════════════════════════════════════╝
     
 📡 URL: http://localhost:${PORT}
+🔐 Authentification: Activée
+   Username: ${VALID_USERNAME}
+   Password: ********
 📊 Base de données: JSON (database.json)
 💾 Sauvegarde: Automatique toutes les 5 min
 ⏰ Démarré le: ${new Date().toLocaleString('fr-FR')}
